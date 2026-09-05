@@ -1,34 +1,52 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final CanvasData canvasData = CanvasData(
+    height: 1600 / 3,
+    width: 900 / 3,
+    backgroundColor: Colors.yellow,
+  );
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(body: Center(child: canvas)),
+      home: Scaffold(
+        body: Center(child: ConfiguredCanvas(canvasData: canvasData)),
+      ),
     );
   }
 }
 
-//0 const Map<String, int> gameConfig = { "height" : 800, "width" : 450 };
-
-//1 const Map<String, double> gameConfig = { "height" : 800, "width" : 450, "color" : Colors.yellow };
-
-class CanvasConfig{
+class CanvasData {
   double height;
   double width;
-  Color backgroundColor ;
-  
-  CanvasConfig( { required this.height, required this.width, required this.backgroundColor } );
+  Color backgroundColor;
+
+  CanvasData({
+    required this.height,
+    required this.width,
+    required this.backgroundColor,
+  });
 }
 
-//1 final Container canvas = Container( height : (gameConfig["height"]!), width : (gameConfig["width"]!));
+class ConfiguredCanvas extends StatelessWidget {
+  final CanvasData canvasData;
 
-final canvasConfig = CanvasConfig( height : 800, width : 450, backgroundColor : Colors.yellow );
-final Container canvas = Container( height : canvasConfig.height, width : canvasConfig.width, color : canvasConfig.backgroundColor );
+  ConfiguredCanvas({required this.canvasData});
+
+  Widget build(BuildContext context) {
+    return Container(
+      height: canvasData.height,
+      width: canvasData.width,
+      color: canvasData.backgroundColor,
+    );
+  }
+}
+
