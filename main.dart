@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   final CanvasData canvasData = CanvasData(
     height: 1600 / 3,
-    width: 400,  //900 / 3,
+    width: 400, //900 / 3,
     borderWidth: 5,
     backgroundColor: Colors.amber,
     borderColor: Colors.black,
@@ -111,6 +111,7 @@ class _BackgroundWidgetState extends State<BackgroundWidget> {
       spacing: 5,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        SkyDataToSky(skyData: SkyData.randomSkyData()),
         Text(
           _secondsLeft > 0 ? '$_secondsLeft' : 'Done!',
           style: const TextStyle(fontSize: 48),
@@ -120,6 +121,7 @@ class _BackgroundWidgetState extends State<BackgroundWidget> {
           child: const Text('Start Countdown'),
         ),
         ElevatedButton(onPressed: dispose, child: const Text('End Countdown')),
+        SkyDataToSky(skyData: SkyData.randomSkyData()),
       ],
     );
   }
@@ -134,103 +136,106 @@ class Cloud extends StatelessWidget {
     int cols = CloudData.cloudWidth;
     int rows = CloudData.cloudLength;
     //int size = CloudData.cloudUnitSize ;
-   double size = 1.0*CloudData.cloudUnitSize ;
-    
+    double size = 1.0 * CloudData.cloudUnitSize;
+
     /*
     const Container WHITE_UNIT = Container( height : 4.0, width : 4.0,  color : Colors.white );
     const Container TRANSPARENT_UNIT = const Container( height : 4.0, width : 4.0,  color : Colors.transparent );
     */
-    
-    Container whiteUnit = Container( height : size, width : size,  color : Colors.white );
-    Container transparentUnit = Container( height : size, width : size,  color : Colors.transparent );
-    
+
+    Container whiteUnit = Container(
+      height: size,
+      width: size,
+      color: Colors.white,
+    );
+    Container transparentUnit = Container(
+      height: size,
+      width: size,
+      color: Colors.transparent,
+    );
+
     return GridView.count(
       crossAxisCount: cols, //3, // Number of columns in the matrix
       //padding: const EdgeInsets.all(8.0),
       //mainAxisSpacing: 4.0, // Space between rows
       //crossAxisSpacing: 4.0, // Space between columns
       children: List.generate((cols) * (rows), (index) {
-        return cloudData.cloudData[index % cols][index] == 1 ? whiteUnit : transparentUnit ;
+        return cloudData.cloudData[index % cols][index] == 1
+            ? whiteUnit
+            : transparentUnit;
       }),
     );
   }
 }
 
 class CloudData {
-  final List<List<int>> cloudData  ;
+  final List<List<int>> cloudData;
   static final int cloudLength = 4;
-  static final int cloudWidth = 4 ;
-  static final int cloudUnitSize = 4 ;
-  CloudData( { required this.cloudData } );
-  
-  static CloudData randomCloudData( ){
-    List<List<int>> result = [] ;
-    
-    const int PRIME_1 = 11 ;
-    const int PRIME_2 = 13 ;
-    
-    for( int row = 0; row < cloudLength ; row++ ){
-      List<int> tempRow = [] ;
-      for( int col = 0; col < cloudLength ; col++ ){
-         int value = ( (col + ( row*PRIME_1 ))*PRIME_2)%2 ;
-        tempRow.add( value );
+  static final int cloudWidth = 4;
+  static final int cloudUnitSize = 4;
+  CloudData({required this.cloudData});
+
+  static CloudData randomCloudData() {
+    List<List<int>> result = [];
+
+    const int PRIME_1 = 11;
+    const int PRIME_2 = 13;
+
+    for (int row = 0; row < cloudLength; row++) {
+      List<int> tempRow = [];
+      for (int col = 0; col < cloudLength; col++) {
+        int value = ((col + (row * PRIME_1)) * PRIME_2) % 2;
+        tempRow.add(value);
       }
-      result.add( tempRow );
+      result.add(tempRow);
     }
-     
-    return CloudData( cloudData : result );
+
+    return CloudData(cloudData: result);
   }
-  
 }
-  int screenWidth = 400 ;
+
+int screenWidth = 400;
+
 class SkyData {
-  final List<CloudData> cloudList ;
+  List<CloudData> cloudList;
   //static final int cloudCount = 10 ;
 
-  static final int cloudCount = (screenWidth/( CloudData.cloudUnitSize * CloudData.cloudWidth )).floor() ;
-  
-  SkyData({ required this.cloudList });
-  
-  static SkyData randomSkyData(){
+  static final int cloudCount =
+      (screenWidth / (CloudData.cloudUnitSize * CloudData.cloudWidth)).floor();
+
+  SkyData({required this.cloudList});
+
+  static SkyData randomSkyData() {
     List<CloudData> result = [];
-    
-    for( int count = 0; count < cloudCount ; count++ ){
-      result.add( CloudData.randomCloudData() );
+
+    for (int count = 0; count < cloudCount; count++) {
+      result.add(CloudData.randomCloudData());
     }
-    
-    return SkyData( cloudList : result );
+
+    return SkyData(cloudList: result);
   }
-  
-  /*
-  void addWithNextCloud(){
-    List<CloudData> newCloudList = cloudList.sublist( 1 ) ;
+
+  void addWithNextCloud() {
+    List<CloudData> newCloudList = cloudList.sublist(1);
     CloudData newCloud = CloudData.randomCloudData();
-    newCloudList.add( newCloud );
-    cloudList = newCloudList ;
+    newCloudList.add(newCloud);
+    this.cloudList = newCloudList;
   }
-  */
-  
 }
 
-class SkyDataToSky extends StatelessWidget{
-  
-  final SkyData skyData ;
-  
-  SkyDataToSky({ required this.skyData });
-  
-    Widget build(BuildContext context) {
-      List<Cloud> cloudWidgetList = [] ;
-      
-      for( int cloudIndex = 0; cloudIndex < SkyData.cloudCount ; cloudIndex++ ){
-        CloudData tempCloudData = skyData.cloudList[ cloudIndex ] ;
-        cloudWidgetList.add( Cloud( cloudData : tempCloudData ) );
-      }
-      
-      
-      return Row( children : cloudWidgetList );
+class SkyDataToSky extends StatelessWidget {
+  final SkyData skyData;
+
+  SkyDataToSky({required this.skyData});
+
+  Widget build(BuildContext context) {
+    List<Cloud> cloudWidgetList = [];
+
+    for (int cloudIndex = 0; cloudIndex < SkyData.cloudCount; cloudIndex++) {
+      CloudData tempCloudData = skyData.cloudList[cloudIndex];
+      cloudWidgetList.add(Cloud(cloudData: tempCloudData));
+    }
+
+    return Row(children: cloudWidgetList);
   }
-
-  
 }
-
-
