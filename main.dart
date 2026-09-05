@@ -51,7 +51,7 @@ class ConfiguredCanvas extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       
-      child : CountdownWidget(  ),
+      child : BackgroundWidget(  ),
       
       height: canvasData.height,
       width: canvasData.width,
@@ -69,7 +69,70 @@ class ConfiguredCanvas extends StatelessWidget {
 }
 
 
+class BackgroundWidget extends StatefulWidget {
+  const BackgroundWidget({Key? key}) : super(key: key);
 
+  @override
+  State<BackgroundWidget> createState() => _BackgroundWidgetState();
+}
+
+class _BackgroundWidgetState extends State<BackgroundWidget> {
+  
+  //const int TIMERLIMIT = 5 ;
+  static const int TIMERLIMIT = 5 ;
+  
+  Timer? _timer;
+  int _secondsLeft = TIMERLIMIT;
+
+  void _startTimer() {
+    // Cancel any existing timer before starting a new one
+    _timer?.cancel(); 
+    
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_secondsLeft > 0) {
+          _secondsLeft--;
+        } else {
+           _secondsLeft = TIMERLIMIT ;
+          //_timer?.cancel(); 
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // ALWAYS cancel the timer when the widget is destroyed to prevent memory leaks
+    _timer?.cancel(); 
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          _secondsLeft > 0 ? '$_secondsLeft' : 'Done!',
+          style: const TextStyle(fontSize: 48),
+        ),
+        ElevatedButton(
+          onPressed: _startTimer,
+          child: const Text('Start Countdown'),
+        ),
+                ElevatedButton(
+          onPressed: dispose,
+          child: const Text('End Countdown'),
+        ),
+      ],
+    );
+  }
+}
+
+
+
+
+/*
 class CountdownWidget extends StatefulWidget {
   const CountdownWidget({Key? key}) : super(key: key);
 
@@ -121,4 +184,4 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     );
   }
 }
-
+*/
