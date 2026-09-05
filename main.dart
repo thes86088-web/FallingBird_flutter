@@ -125,15 +125,16 @@ class _BackgroundWidgetState extends State<BackgroundWidget> {
   }
 }
 
-class Clouds extends StatelessWidget {
-  final List<List<int>> cloudMatrixState;
+class Cloud extends StatelessWidget {
+  final CloudData cloudData;
 
-  Clouds({required this.cloudMatrixState});
+  Cloud({required this.cloudData});
 
   Widget build(BuildContext context) {
-    int cols = cloudMatrixState[0].length;
-    int rows = cloudMatrixState.length;
-    ;
+    int cols = CloudData.cloudWidth;
+    int rows = CloudData.cloudLength;
+    int size = CloudData.cloudSize ;
+
     return GridView.count(
       crossAxisCount: cols, //3, // Number of columns in the matrix
       //padding: const EdgeInsets.all(8.0),
@@ -141,66 +142,88 @@ class Clouds extends StatelessWidget {
       //crossAxisSpacing: 4.0, // Space between columns
       children: List.generate((cols) * (rows), (index) {
         return Container(
-          color: cloudMatrixState[index % cols][index] == 1
+          height : size*1.0,
+          width : size*1.0,
+          color: cloudData.cloudData[index % cols][index] == 1
               ? Colors.white
               : Colors.transparent, //Colors.blue[100],
-          child: Center(child: Text('Cell $index')),
+          //child: Center(child: Text('Cell $index')),
         );
       }),
     );
   }
 }
 
-/*
-class CountdownWidget extends StatefulWidget {
-  const CountdownWidget({Key? key}) : super(key: key);
-
-  @override
-  State<CountdownWidget> createState() => _CountdownWidgetState();
+class CloudData {
+  final List<List<int>> cloudData  ;
+  static final int cloudLength = 4;
+  static final int cloudWidth = 4 ;
+  static final int cloudSize = 4 ;
+  CloudData( { required this.cloudData } );
+  
+  static CloudData randomCloudData( ){
+    List<List<int>> result = [] ;
+    
+    const int PRIME_1 = 11 ;
+    const int PRIME_2 = 13 ;
+    
+    for( int row = 0; row < cloudLength ; row++ ){
+      List<int> tempRow = [] ;
+      for( int col = 0; col < cloudLength ; col++ ){
+         int value = ( (col + ( row*PRIME_1 ))*PRIME_2)%2 ;
+        tempRow.add( value );
+      }
+      result.add( tempRow );
+    }
+     
+    return CloudData( cloudData : result );
+  }
+  
 }
 
-class _CountdownWidgetState extends State<CountdownWidget> {
-  Timer? _timer;
-  int _secondsLeft = 10;
-
-  void _startTimer() {
-    // Cancel any existing timer before starting a new one
-    _timer?.cancel(); 
+class SkyData {
+  final List<CloudData> cloudList ;
+  static final int cloudCount = 10 ;
+  
+  SkyData({ required this.cloudList });
+  
+  static SkyData randomSkyData(){
+    List<CloudData> result = [];
     
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_secondsLeft > 0) {
-          _secondsLeft--;
-        } else {
-          // Stop the timer when it reaches 0
-          _timer?.cancel(); 
-        }
-      });
-    });
+    for( int count = 0; count < cloudCount ; count++ ){
+      result.add( CloudData.randomCloudData() );
+    }
+    
+    return SkyData( cloudList : result );
   }
+  
+}
 
-  @override
-  void dispose() {
-    // ALWAYS cancel the timer when the widget is destroyed to prevent memory leaks
-    _timer?.cancel(); 
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          _secondsLeft > 0 ? '$_secondsLeft' : 'Done!',
-          style: const TextStyle(fontSize: 48),
-        ),
-        ElevatedButton(
-          onPressed: _startTimer,
-          child: const Text('Start Countdown'),
-        ),
-      ],
+/*
+class SkyDataToSky extends StatelessWidget{
+  
+  final SkyData skyData ;
+  
+  SkyDataToSky({ required this.skyData });
+  
+      Widget build(BuildContext context) {
+            //int cols = cloudMatrixState[0].length;
+    //int rows = cloudMatrixState.length;
+    
+    return GridView.count(
+      crossAxisCount: cloudCount*cloudLen, //Number of columns in the matrix
+      children: List.generate(( cols ) * ( rows ), (index) ){
+        return Container(
+          color: cloudMatrixState[index % cols][index] == 1
+              ? Colors.white
+              : Colors.transparent, //Colors.blue[100],
+          child: SizedBox( height : 3, width : 3 ),
+        );
+      }),
     );
   }
+
+  
 }
 */
+
