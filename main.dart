@@ -10,7 +10,9 @@ class MyApp extends StatelessWidget {
   final CanvasData canvasData = CanvasData(
     height: 1600 / 3,
     width: 900 / 3,
-    backgroundColor: Colors.yellow,
+    borderWidth : 5,
+    backgroundColor: Colors.amber,
+    borderColor : Colors.black
   );
 
   @override
@@ -27,12 +29,16 @@ class MyApp extends StatelessWidget {
 class CanvasData {
   double height;
   double width;
+  double borderWidth ;
   Color backgroundColor;
+  Color borderColor ;
 
   CanvasData({
     required this.height,
     required this.width,
-    required this.backgroundColor,
+    required this.borderWidth,
+        required this.backgroundColor,
+    required this.borderColor
   });
 }
 
@@ -45,8 +51,15 @@ class ConfiguredCanvas extends StatelessWidget {
     return Container(
       height: canvasData.height,
       width: canvasData.width,
-      color: canvasData.backgroundColor,
+      decoration: BoxDecoration(
+        color: canvasData.backgroundColor,
+        border: Border.all(
+          color: canvasData.borderColor, // Border color
+          width: canvasData.borderWidth, //3.0, // Border width
+          style: BorderStyle.solid, // Default is solid
+        ),
+      ),
+      //color: canvasData.backgroundColor,
     );
   }
 }
-
