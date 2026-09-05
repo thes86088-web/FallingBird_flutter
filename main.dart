@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   final CanvasData canvasData = CanvasData(
     height: 1600 / 3,
-    width: 900 / 3,
+    width: 400,  //900 / 3,
     borderWidth: 5,
     backgroundColor: Colors.amber,
     borderColor: Colors.black,
@@ -133,7 +133,7 @@ class Cloud extends StatelessWidget {
   Widget build(BuildContext context) {
     int cols = CloudData.cloudWidth;
     int rows = CloudData.cloudLength;
-    int size = CloudData.cloudSize ;
+    int size = CloudData.cloudUnitSize ;
 
     return GridView.count(
       crossAxisCount: cols, //3, // Number of columns in the matrix
@@ -158,7 +158,7 @@ class CloudData {
   final List<List<int>> cloudData  ;
   static final int cloudLength = 4;
   static final int cloudWidth = 4 ;
-  static final int cloudSize = 4 ;
+  static final int cloudUnitSize = 4 ;
   CloudData( { required this.cloudData } );
   
   static CloudData randomCloudData( ){
@@ -180,10 +180,12 @@ class CloudData {
   }
   
 }
-
+  int screenWidth = 400 ;
 class SkyData {
   final List<CloudData> cloudList ;
-  static final int cloudCount = 10 ;
+  //static final int cloudCount = 10 ;
+
+  static final int cloudCount = (screenWidth/( CloudData.cloudUnitSize * CloudData.cloudWidth )).floor() ;
   
   SkyData({ required this.cloudList });
   
@@ -197,33 +199,36 @@ class SkyData {
     return SkyData( cloudList : result );
   }
   
+  /*
+  void addWithNextCloud(){
+    List<CloudData> newCloudList = cloudList.sublist( 1 ) ;
+    CloudData newCloud = CloudData.randomCloudData();
+    newCloudList.add( newCloud );
+    cloudList = newCloudList ;
+  }
+  */
+  
 }
 
-/*
 class SkyDataToSky extends StatelessWidget{
   
   final SkyData skyData ;
   
   SkyDataToSky({ required this.skyData });
   
-      Widget build(BuildContext context) {
-            //int cols = cloudMatrixState[0].length;
-    //int rows = cloudMatrixState.length;
-    
-    return GridView.count(
-      crossAxisCount: cloudCount*cloudLen, //Number of columns in the matrix
-      children: List.generate(( cols ) * ( rows ), (index) ){
-        return Container(
-          color: cloudMatrixState[index % cols][index] == 1
-              ? Colors.white
-              : Colors.transparent, //Colors.blue[100],
-          child: SizedBox( height : 3, width : 3 ),
-        );
-      }),
-    );
+    Widget build(BuildContext context) {
+      List<Cloud> cloudWidgetList = [] ;
+      
+      for( int cloudIndex = 0; cloudIndex < SkyData.cloudCount ; cloudIndex++ ){
+        CloudData tempCloudData = skyData.cloudList[ cloudIndex ] ;
+        cloudWidgetList.add( Cloud( cloudData : tempCloudData ) );
+      }
+      
+      
+      return Row( children : cloudWidgetList );
   }
 
   
 }
-*/
+
 
