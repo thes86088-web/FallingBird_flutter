@@ -133,22 +133,24 @@ class Cloud extends StatelessWidget {
   Widget build(BuildContext context) {
     int cols = CloudData.cloudWidth;
     int rows = CloudData.cloudLength;
-    int size = CloudData.cloudUnitSize ;
-
+    //int size = CloudData.cloudUnitSize ;
+   double size = 1.0*CloudData.cloudUnitSize ;
+    
+    /*
+    const Container WHITE_UNIT = Container( height : 4.0, width : 4.0,  color : Colors.white );
+    const Container TRANSPARENT_UNIT = const Container( height : 4.0, width : 4.0,  color : Colors.transparent );
+    */
+    
+    Container whiteUnit = Container( height : size, width : size,  color : Colors.white );
+    Container transparentUnit = Container( height : size, width : size,  color : Colors.transparent );
+    
     return GridView.count(
       crossAxisCount: cols, //3, // Number of columns in the matrix
       //padding: const EdgeInsets.all(8.0),
       //mainAxisSpacing: 4.0, // Space between rows
       //crossAxisSpacing: 4.0, // Space between columns
       children: List.generate((cols) * (rows), (index) {
-        return Container(
-          height : size*1.0,
-          width : size*1.0,
-          color: cloudData.cloudData[index % cols][index] == 1
-              ? Colors.white
-              : Colors.transparent, //Colors.blue[100],
-          //child: Center(child: Text('Cell $index')),
-        );
+        return cloudData.cloudData[index % cols][index] == 1 ? whiteUnit : transparentUnit ;
       }),
     );
   }
