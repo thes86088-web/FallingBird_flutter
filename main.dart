@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'dart:async';
 
 void main() {
@@ -11,9 +12,9 @@ class MyApp extends StatelessWidget {
   final CanvasData canvasData = CanvasData(
     height: 1600 / 3,
     width: 900 / 3,
-    borderWidth : 5,
+    borderWidth: 5,
     backgroundColor: Colors.amber,
-    borderColor : Colors.black
+    borderColor: Colors.black,
   );
 
   @override
@@ -30,16 +31,16 @@ class MyApp extends StatelessWidget {
 class CanvasData {
   double height;
   double width;
-  double borderWidth ;
+  double borderWidth;
   Color backgroundColor;
-  Color borderColor ;
+  Color borderColor;
 
   CanvasData({
     required this.height,
     required this.width,
     required this.borderWidth,
-        required this.backgroundColor,
-    required this.borderColor
+    required this.backgroundColor,
+    required this.borderColor,
   });
 }
 
@@ -50,9 +51,8 @@ class ConfiguredCanvas extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Container(
-      
-      child : BackgroundWidget(  ),
-      
+      child: BackgroundWidget(),
+
       height: canvasData.height,
       width: canvasData.width,
       decoration: BoxDecoration(
@@ -68,7 +68,6 @@ class ConfiguredCanvas extends StatelessWidget {
   }
 }
 
-
 class BackgroundWidget extends StatefulWidget {
   const BackgroundWidget({Key? key}) : super(key: key);
 
@@ -77,24 +76,23 @@ class BackgroundWidget extends StatefulWidget {
 }
 
 class _BackgroundWidgetState extends State<BackgroundWidget> {
-  
   //const int TIMERLIMIT = 5 ;
-  static const int TIMERLIMIT = 5 ;
-  
+  static const int TIMERLIMIT = 5;
+
   Timer? _timer;
   int _secondsLeft = TIMERLIMIT;
 
   void _startTimer() {
     // Cancel any existing timer before starting a new one
-    _timer?.cancel(); 
-    
+    _timer?.cancel();
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_secondsLeft > 0) {
           _secondsLeft--;
         } else {
-           _secondsLeft = TIMERLIMIT ;
-          //_timer?.cancel(); 
+          _secondsLeft = TIMERLIMIT;
+          //_timer?.cancel();
         }
       });
     });
@@ -103,13 +101,14 @@ class _BackgroundWidgetState extends State<BackgroundWidget> {
   @override
   void dispose() {
     // ALWAYS cancel the timer when the widget is destroyed to prevent memory leaks
-    _timer?.cancel(); 
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 5,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
@@ -120,17 +119,37 @@ class _BackgroundWidgetState extends State<BackgroundWidget> {
           onPressed: _startTimer,
           child: const Text('Start Countdown'),
         ),
-                ElevatedButton(
-          onPressed: dispose,
-          child: const Text('End Countdown'),
-        ),
+        ElevatedButton(onPressed: dispose, child: const Text('End Countdown')),
       ],
     );
   }
 }
 
+class Clouds extends StatelessWidget {
+  final List<List<int>> cloudMatrixState;
 
+  Clouds({required this.cloudMatrixState});
 
+  Widget build(BuildContext context) {
+    int cols = cloudMatrixState[0].length;
+    int rows = cloudMatrixState.length;
+    ;
+    return GridView.count(
+      crossAxisCount: cols, //3, // Number of columns in the matrix
+      //padding: const EdgeInsets.all(8.0),
+      //mainAxisSpacing: 4.0, // Space between rows
+      //crossAxisSpacing: 4.0, // Space between columns
+      children: List.generate((cols) * (rows), (index) {
+        return Container(
+          color: cloudMatrixState[index % cols][index] == 1
+              ? Colors.white
+              : Colors.transparent, //Colors.blue[100],
+          child: Center(child: Text('Cell $index')),
+        );
+      }),
+    );
+  }
+}
 
 /*
 class CountdownWidget extends StatefulWidget {
